@@ -20,7 +20,7 @@ func main() {
 	if addr == "" {
 		addr = "stun.l.google.com:19302"
 	}
-	c, err := stun.Dial("udp4", addr)
+	c, err := stun.Dial("udp", addr)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
@@ -37,7 +37,7 @@ func main() {
 		if getErr := xorAddr.GetFrom(res.Message); getErr != nil {
 			log.Fatalln(getErr)
 		}
-		fmt.Printf("http://%s:%d\n", xorAddr.IP.String(), xorAddr.Port)
+		fmt.Printf("http://[%s]:%d\n", xorAddr.IP.String(), xorAddr.Port)
 		ch <- struct{}{}
 	}); err != nil {
 		log.Fatal("do:", err)
@@ -49,7 +49,7 @@ func main() {
 		rw.Header().Set("Content-Type", "text/plain")
 		rw.WriteHeader(200)
 		fmt.Fprintf(rw, "Hello there!\n")
-		fmt.Fprintf(rw, "test-page: http://%s:%d\n", xorAddr.IP.String(), xorAddr.Port)
+		fmt.Fprintf(rw, "test-page: http://[%s]:%d\n", xorAddr.IP.String(), xorAddr.Port)
 	}))
 
 	if err := c.Close(); err != nil {
